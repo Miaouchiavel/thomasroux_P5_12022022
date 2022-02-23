@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "kanap-backend": "file:back"
+  }
+}
