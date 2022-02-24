@@ -3,9 +3,10 @@ main()
 
 
 async function main() {
+    //recupere les données des produits depuis l'API
     const articles = await getArticles()
-    console.log(articles)
-
+        //creer les elemens HTML et insertion pour chasue produit dans la section #items
+    displayArticles(articles)
 }
 
 // recupération des articles sur  l'api 
@@ -22,8 +23,51 @@ function getArticles() {
 
 }
 
-// display article // 
+// display article //
+function displayArticles(articles) {
+    //on fait une iteration sur les articles recus en parametres
+    articles.forEach(function(article) {
+        //pour chaque produit du tableau articles recus => chaque produit vaut article
+        // on appel la function createProductHtml qui va créer les élements HTML du produits et retourner l'élement
+        let productHtml = createProductHtml(article);
 
-// for (let i = 0; i < arcitcles.lenght; i++) {
+        //on insere dans la section items chaque produit a chaque itération
+        document.getElementById("items").appendChild(productHtml);
 
-// }
+    })
+
+}
+
+
+function createProductHtml(article) {
+
+
+    let link = document.createElement("a");
+    link.href = "./product.html?id=" + article._id
+    console.log(link)
+
+    let articleHtml = document.createElement("article");
+
+    let imageHtml = document.createElement("img");
+    imageHtml.src = article.imageUrl;
+    imageHtml.alt = article.altTxt;
+
+    let titleHtml = document.createElement("h3");
+    titleHtml.innerHTML = article.name;
+    titleHtml.classList.add("productName");
+
+
+    let pHtml = document.createElement("p");
+    pHtml.innerHTML = article.description;
+    pHtml.classList.add("productDescription");
+
+    articleHtml.appendChild(imageHtml);
+    articleHtml.appendChild(titleHtml);
+    articleHtml.appendChild(pHtml);
+
+    link.appendChild(articleHtml);
+
+    return link;
+
+
+}
