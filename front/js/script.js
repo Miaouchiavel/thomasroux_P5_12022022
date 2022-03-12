@@ -47,8 +47,9 @@ function createProductHtml(article) {
     console.log(link)
 
     let articleHtml = document.createElement("article");
-
+    // créer l'element img
     let imageHtml = document.createElement("img");
+    // va chercher la source de l'image dans l'api
     imageHtml.src = article.imageUrl;
     imageHtml.alt = article.altTxt;
 
