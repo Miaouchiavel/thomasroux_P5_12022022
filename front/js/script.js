@@ -41,7 +41,7 @@ function displayArticles(articles) {
 
 function createProductHtml(article) {
 
-
+    // créeation du lien "a"
     let link = document.createElement("a");
     link.href = "./product.html?id=" + article._id
     console.log(link)
@@ -57,11 +57,11 @@ function createProductHtml(article) {
     titleHtml.innerHTML = article.name;
     titleHtml.classList.add("productName");
 
-
+    // créetion de "p" et ajout de la description
     let pHtml = document.createElement("p");
     pHtml.innerHTML = article.description;
     pHtml.classList.add("productDescription");
-
+    //ajout des élements au lien 
     articleHtml.appendChild(imageHtml);
     articleHtml.appendChild(titleHtml);
     articleHtml.appendChild(pHtml);

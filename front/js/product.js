@@ -62,31 +62,39 @@ envoyerPanier.addEventListener("click", (event => {
     }
 
 
-
+    // on conditionne l'écoute on ajoute a produit data seulement si les quantité est non nul & la couleur choisite 
     if (produitData.quantity > 0 && produitData.colorChoice) {
         addCartProduct(produitData)
+            // sinon message d'alerte 
     } else {
-        alert("merci de choisir ")
+        alert("merci de choisir une couleur et une quantité ")
     }
 }))
 
 function addCartProduct(produitData) {
     //Initialisation du local storage Json.parse convertie les données en objet JS
     let cart = JSON.parse(localStorage.getItem("cart"));
+
     let localCart = []
+        // si le cart (local storage) est  déjà remplis 
     if (cart) {
         console.log(localCart)
+
         cart.forEach(el => {
             if (el.idProduit == produitData.idProduit && el.colorChoice == produitData.colorChoice) {
                 el.quantity += produitData.quantity
                 localCart.push(el)
                 console.log("oui")
-            } else {
+            }
+            // si il est vide on push 
+            else {
                 localCart.push(produitData);
             }
         })
         console.log(localCart);
+
         localCart.push(produitData);
+        //ajout des items local cart au local 
         localStorage.setItem("cart", JSON.stringify(localCart));
 
 
