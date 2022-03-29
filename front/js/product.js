@@ -71,59 +71,65 @@ envoyerPanier.addEventListener("click", (event => {
     }
 }))
 
+// function addCartProduct(produitData) {
+//     //Initialisation du local storage Json.parse convertie les données en objet JS
+//     let cart = JSON.parse(localStorage.getItem("cart"));
+//     let item = cart.find(item => produitData.idProduct);
+//     let localCart = []
+//         // si le cart (local storage) est  déjà remplis 
+//     if (cart) {
+//         console.log(localCart)
+
+//         cart.forEach(el => {
+//             if (el.idProduit == produitData.idProduit && el.colorChoice == produitData.colorChoice) {
+//                 el.quantity += produitData.quantity
+//                 localCart.push(el)
+//                 console.log("oui")
+//             }
+//             // si il est vide on push 
+//             else {
+//                 localCart.push(produitData);
+//             }
+//         })
+//         console.log(localCart);
+
+//         localCart.push(produitData);
+//         //ajout des items local cart au local 
+//         localStorage.setItem("cart", JSON.stringify(localCart));
+
+
+
+//     } else {
+//         localCart.push(produitData);
+//         localStorage.setItem("cart", JSON.stringify(localCart))
+//         console.log(localCart)
+
+//     }
+// }
+
 function addCartProduct(produitData) {
-    //Initialisation du local storage Json.parse convertie les données en objet JS
-    let cart = JSON.parse(localStorage.getItem("cart"));
+    //Récupération du panier dans le localStorage
+    let localCart = [];
+    if (localStorage.cart) {
+        localCart = JSON.parse(localStorage.cart);
+    }
+    //Si le panier du localStorage n'est pas vide
+    if (localCart.length) {
+        let modified = false;
+        localCart.forEach(element => {
+            if (element.idProduit === produitData.idProduit && element.colorChoice === produitData.colorChoice) {
 
-    let localCart = []
-        // si le cart (local storage) est  déjà remplis 
-    if (cart) {
-        console.log(localCart)
-
-        cart.forEach(el => {
-            if (el.idProduit == produitData.idProduit && el.colorChoice == produitData.colorChoice) {
-                el.quantity += produitData.quantity
-                localCart.push(el)
-                console.log("oui")
+                element.quantity += produitData.quantity;
+                modified = true;
             }
-            // si il est vide on push 
-            else {
-                localCart.push(produitData);
-            }
-        })
-        console.log(localCart);
-
-        localCart.push(produitData);
-        //ajout des items local cart au local 
-        localStorage.setItem("cart", JSON.stringify(localCart));
-
-
+        });
+        if (!modified) {
+            localCart.push(produitData);
+        }
 
     } else {
         localCart.push(produitData);
-        localStorage.setItem("cart", JSON.stringify(localCart))
-        console.log(localCart)
 
     }
-    // console.log(cart);
-
-    // let produitLocalStorage = JSON.parse(localStorage.getItem("cart"));
-    // console.log(produitLocalStorage)
-
-    // // si il y a déjà des produits dans local storage 
-    // if (produitLocalStorage) {
-    //     // ajouter condition if idProduct === idProduct && color choice ==== color choice then quantity ++ quantity  else ce qui a écrit en dessous new array 
-
-    //     produitLocalStorage.push(produitData);
-    //     localStorage.setItem("cart", JSON.stringify(produitLocalStorage))
-
-    // }
-    // // si il n'y a  aucun produit dans le local storage
-    // else {
-    //     produitLocalStorage = []
-    //     produitLocalStorage.push(produitData);
-    //     // ajoute au local storage le produit sous form JSON avec le stringify
-
-    // }
-
+    localStorage.setItem("cart", JSON.stringify(localCart));
 }
