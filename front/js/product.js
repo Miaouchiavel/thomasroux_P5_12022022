@@ -67,7 +67,8 @@ envoyerPanier.addEventListener("click", (event => {
         addCartProduct(produitData)
             // sinon message d'alerte 
     } else {
-        alert("merci de choisir une couleur et une quantité ")
+        alert("merci de choisir une couleur et une quantité non null  ")
+
     }
 }))
 

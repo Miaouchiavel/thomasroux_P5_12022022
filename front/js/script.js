@@ -24,6 +24,7 @@ function getArticles() {
 }
 
 // display article //
+
 function displayArticles(articles) {
     //on fait une iteration sur les articles recus en parametres
     articles.forEach(function(article) {

@@ -1,2 +1,2 @@
 const idCmd = document.getElementById("orderId");
-idCmd.innerText = localStorage.getItem("orderId");
+idCmd.innerHTML = new URL(window.location.href).searchParams.get("id");

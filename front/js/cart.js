@@ -2,6 +2,13 @@
 let localCart = JSON.parse(localStorage.getItem("cart"));
 console.table(localCart);
 
+init();
+
+function init() {
+    getCart();
+    totals();
+    getForm();
+}
 
 // selection de la position pour le panier vide 
 const positionEmptyCart = document.querySelector("#cart__items");
@@ -103,39 +110,13 @@ function getCart() {
 
         }
     }
+
 }
 
-getCart();
-
-function deleteProduct() {
-    let btn_supprimer = document.querySelectorAll(".deleteItem");
-
-    for (let j = 0; j < btn_supprimer.length; j++) {
-        btn_supprimer[j].addEventListener("click", (event) => {
-            event.preventDefault();
-
-            //Selection de l'element à supprimer en fonction de son id ET sa couleur
-            let idDelete = localCart[j].idProduit;
-            let colorDelete = localCart[j].colorChoice;
-
-            localCart = localCart.filter(el => el.colorChoice !== colorDelete && el.idProduit !== idDelete);
-
-            localStorage.setItem("cart", JSON.stringify(localCart));
-
-            //Alerte produit supprimé et refresh
-            alert("Ce produit a bien été supprimé du panier");
-            location.reload();
-        })
-    }
-}
-deleteProduct();
-
-
-
-
-
+//getCart();
 
 // total Prix et Qty 
+
 
 function totals() {
 
@@ -151,48 +132,97 @@ function totals() {
 
     let TotalQty = document.getElementById('totalQuantity');
     TotalQty.innerHTML = totalQty;
-    console.log(totalQty);
+
 
     let productTotalPrice = document.getElementById('totalPrice');
     productTotalPrice.innerHTML = totalPrice;
-    console.log(totalPrice);
+
 
 
 
 
 }
+//totals();
 
-totals();
+
+// suppression d'un product
+
+function deleteProduct() {
+    const btnDelete = document.querySelectorAll('.deleteItem');
+
+    btnDelete.forEach((btn) => {
+        console.log(btn);
+        btn.addEventListener('click', () => {
+            //utilisation du document closest pour récuperer les data set stocké dans article colo et id 
+            const article = btn.closest('article');
+            const articleID = article.dataset.id;
+            const articleColor = article.dataset.color;
+            // boucle for dans le local storage 
+            for (let j = 0; j < localCart.length; j++) {
+                // condition if pour vérifier que l'objet supprimer dans le localstorage correspond a l'objet sur la page 
+                if (articleID === localCart[j].idProduit && articleColor === localCart[j].colorChoice) {
+                    // utilisation de splice qui  supprime l'élément a l'index j qui correspond a la condition if 
+                    localCart.splice(j, 1);
+                    // on remet l'array modifier dans le local storage 
+                    localStorage.setItem("cart", JSON.stringify(localCart));
+                }
+
+                // refresh
+                location.reload();
+
+
+            }
+        })
+    });
+};
+deleteProduct();
+
+
+
+
+
+
 
 // Modification d'une quantité de produit
-function modifyQtt() {
-    let qttModif = document.querySelectorAll(".itemQuantity");
 
-    for (let k = 0; k < qttModif.length; k++) {
-        qttModif[k].addEventListener("change", (event) => {
-            event.preventDefault();
+let qttModif = document.querySelectorAll(".itemQuantity");
 
-            //Selection de l'element à modifier en fonction de son id 
-            let quantityModif = localCart[k].quantity;
-            let qttModifValue = qttModif[k].valueAsNumber;
-            // cherche l'element du array ayant le même id  même et une quantité différent 
-            const resultFind = localCart.find((el) => el.qttModifValue !== quantityModif && el.idProduit == localCart[k].idProduit);
-            console.log(resultFind);
+// for (let k = 0; k < qttModif.length; k++) {
+qttModif.forEach(element => {
+    element.addEventListener("change", (event) => {
+        event.preventDefault();
 
+        //Selection de l'element à modifier en fonction de son id  et sa couleur 
+        let article = element.closest('article');
+        let produitData = {
 
-            resultFind.quantity = qttModifValue;
-            localCart[k].quantity = resultFind.quantity;
+            articleID: article.dataset.id,
+            articleColor: article.dataset.color,
+            articleQuantity: parseInt(article.querySelector("input").value)
 
-            localStorage.setItem("cart", JSON.stringify(localCart));
+        }
+        console.log(produitData)
+        addCartProduct(produitData);
+        // recalcule totals
+        totals()
+    })
 
-            // recalcule totals
-            totals()
-        })
-    }
+});
+
+function addCartProduct(produitData) {
+
+    //Si le panier du localStorage n'est pas vide
+    localCart.forEach(element => {
+        if (element.idProduit === produitData.articleID && element.colorChoice === produitData.articleColor) {
+
+            element.quantity = produitData.articleQuantity;
+
+        }
+    });
+    localStorage.setItem("cart", JSON.stringify(localCart));
+
 }
-modifyQtt();
 
-console.log(modifyQtt());
 
 
 
@@ -201,116 +231,126 @@ console.log(modifyQtt());
 
 
 //formulaire 
+function getForm() {
+    // selction de l'id du form 
+    let form = document.querySelector(".cart__order__form");
 
-// selction de l'id du form 
-let form = document.querySelector(".cart__order__form");
+
+    //Création des expressions régulières avec regexp 
+    let emailRegExp = new RegExp('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$');
+    let charRegExp = new RegExp("^[a-zA-Z ,.'-]+$");
+    let addressRegExp = new RegExp("^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+");
+
+    // Ecoute de la modification du prénom
+    form.firstName.addEventListener('change', function() {
+        validFirstName(this);
+    });
+    console.log(form.firstName);
+
+    // Ecoute de la modification du nom
+    form.lastName.addEventListener('change', function() {
+        validLastName(this);
+    });
+
+    // Ecoute de la modification de l'adresse
+    form.address.addEventListener('change', function() {
+        validAddress(this);
+    });
+
+    // Ecoute de la modification de la ville 
+    form.city.addEventListener('change', function() {
+        validCity(this);
+    });
+
+    // Ecoute de la modification du mail
+    form.email.addEventListener('change', function() {
+        validEmail(this);
+    });
+
+    //validation du prénom
+    const validFirstName = function(inputFirstName) {
+        let firstNameErrorMsg = inputFirstName.nextElementSibling;
+
+        if (charRegExp.test(inputFirstName.value)) {
+            firstNameErrorMsg.innerHTML = '';
+        } else {
+            firstNameErrorMsg.innerHTML = 'Veuillez renseigner ce champ.';
+        }
+    };
+
+    //validation du nom
+    const validLastName = function(inputLastName) {
+        let lastNameErrorMsg = inputLastName.nextElementSibling;
+
+        if (charRegExp.test(inputLastName.value)) {
+            lastNameErrorMsg.innerHTML = '';
+        } else {
+            lastNameErrorMsg.innerHTML = 'Veuillez renseigner ce champ.';
+        }
+    };
+
+    //validation de l'adresse
+    const validAddress = function(inputAddress) {
+        let addressErrorMsg = inputAddress.nextElementSibling;
+
+        if (addressRegExp.test(inputAddress.value)) {
+            addressErrorMsg.innerHTML = '';
+        } else {
+            addressErrorMsg.innerHTML = 'Veuillez renseigner ce champ.';
+        }
+    };
+    console.log(validAddress);
+
+    //validation de la ville
+    const validCity = function(inputCity) {
+        let cityErrorMsg = inputCity.nextElementSibling;
+
+        if (charRegExp.test(inputCity.value)) {
+            cityErrorMsg.innerHTML = '';
+        } else {
+            cityErrorMsg.innerHTML = 'Veuillez renseigner ce champ.';
+        }
+    };
+
+    //validation de l'email
+    const validEmail = function(inputEmail) {
+        let emailErrorMsg = inputEmail.nextElementSibling;
+
+        if (emailRegExp.test(inputEmail.value)) {
+            emailErrorMsg.innerHTML = '';
+        } else {
+            emailErrorMsg.innerHTML = 'Veuillez renseigner votre email.';
+        }
+    };
+}
 
 
-//Création des expressions régulières avec regexp 
-let emailRegExp = new RegExp('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$');
-let charRegExp = new RegExp("^[a-zA-Z ,.'-]+$");
-let addressRegExp = new RegExp("^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+");
-
-// Ecoute de la modification du prénom
-form.firstName.addEventListener('change', function() {
-    validFirstName(this);
-});
-console.log(form.firstName);
-
-// Ecoute de la modification du nom
-form.lastName.addEventListener('change', function() {
-    validLastName(this);
-});
-
-// Ecoute de la modification de l'adresse
-form.address.addEventListener('change', function() {
-    validAddress(this);
-});
-
-// Ecoute de la modification de la ville 
-form.city.addEventListener('change', function() {
-    validCity(this);
-});
-
-// Ecoute de la modification du mail
-form.email.addEventListener('change', function() {
-    validEmail(this);
-});
-
-//validation du prénom
-const validFirstName = function(inputFirstName) {
-    let firstNameErrorMsg = inputFirstName.nextElementSibling;
-
-    if (charRegExp.test(inputFirstName.value)) {
-        firstNameErrorMsg.innerHTML = '';
-    } else {
-        firstNameErrorMsg.innerHTML = 'Veuillez renseigner ce champ.';
-    }
-};
-
-//validation du nom
-const validLastName = function(inputLastName) {
-    let lastNameErrorMsg = inputLastName.nextElementSibling;
-
-    if (charRegExp.test(inputLastName.value)) {
-        lastNameErrorMsg.innerHTML = '';
-    } else {
-        lastNameErrorMsg.innerHTML = 'Veuillez renseigner ce champ.';
-    }
-};
-
-//validation de l'adresse
-const validAddress = function(inputAddress) {
-    let addressErrorMsg = inputAddress.nextElementSibling;
-
-    if (addressRegExp.test(inputAddress.value)) {
-        addressErrorMsg.innerHTML = '';
-    } else {
-        addressErrorMsg.innerHTML = 'Veuillez renseigner ce champ.';
-    }
-};
-console.log(validAddress);
-
-//validation de la ville
-const validCity = function(inputCity) {
-    let cityErrorMsg = inputCity.nextElementSibling;
-
-    if (charRegExp.test(inputCity.value)) {
-        cityErrorMsg.innerHTML = '';
-    } else {
-        cityErrorMsg.innerHTML = 'Veuillez renseigner ce champ.';
-    }
-};
-
-//validation de l'email
-const validEmail = function(inputEmail) {
-    let emailErrorMsg = inputEmail.nextElementSibling;
-
-    if (emailRegExp.test(inputEmail.value)) {
-        emailErrorMsg.innerHTML = '';
-    } else {
-        emailErrorMsg.innerHTML = 'Veuillez renseigner votre email.';
-    }
-};
 
 // envoi au local storage de la cmd
 
 function postCmd() {
-    // récupération de l'order 
-    const btnCmd = document.getElementById('order');
 
-    btnCmd.addEventListener("click", () => {
+    const btnCmd = document.getElementById('order');
+    // écoute du bouton order
+
+    btnCmd.addEventListener('click', (event) => {
+
+        event.preventDefault();
+        event.stopPropagation();
+
 
 
         //Construction d'un array depuis le local storage qui récupère tout les produits
         let products = [];
+        // boucle for pour récuperer les id du local storage 
         for (let i = 0; i < localCart.length; i++) {
             products.push(localCart[i].idProduit);
         }
-        console.log(products);
+        console.log(products.idProduit);
 
 
 
+        // création d'un array order qui récupère les éléments du form & et les idproduct
 
         const order = {
             contact: {
@@ -320,26 +360,30 @@ function postCmd() {
                 city: document.getElementById("city"),
                 email: document.getElementById("email"),
             },
-            product: products,
+            products: products,
         };
         console.log(order);
 
-
+        // fetch pour la méthode post envoye des infos sur l'api 
         fetch("http://localhost:3000/api/products/order", {
                 // method utilisé 
                 method: 'POST',
                 // contenue du post 
                 body: JSON.stringify(order),
                 headers: {
-                    'Accept': 'application/json',
-                    "Content-Type": "application/json"
-                }
+                    "Accept": "application / json ",
+                    "Content-Type": "application/json",
+                },
+
             })
+            // response 
             .then((response) => response.json())
-            .then((dataSend) => {
-                console.log(dataSend);
-                localStorage.setItem("orderID", JSON.stringify(dataSend));
-                document.location.href = "confirmation.html";
+            // reponse de l'api et envoye a la page confirmation cmd
+            .then((data) => {
+                console.log(data);
+                console.log('oui')
+                    // renvoi sur la page confirmation 
+                document.location.href = `confirmation.html?id=${data.orderId}`;
             })
             .catch(((error) => {
                 alert(error.message);
