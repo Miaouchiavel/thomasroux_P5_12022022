@@ -10,12 +10,14 @@ function init() {
     getForm();
 }
 
+
 // selection de la position pour le panier vide 
-const positionEmptyCart = document.querySelector("#cart__items");
+// getCart();
 
 function getCart() {
     // si le local storage est vide 
     if (localCart === null || localCart == 0) {
+        const positionEmptyCart = document.querySelector("#cart__items");
         const emptyCart = `<p>Votre panier est vide</p>`;
         positionEmptyCart.innerHTML = emptyCart;
     } else {
@@ -274,7 +276,7 @@ function getForm() {
         if (charRegExp.test(inputFirstName.value)) {
             firstNameErrorMsg.innerHTML = '';
         } else {
-            firstNameErrorMsg.innerHTML = 'Veuillez renseigner ce champ.';
+            firstNameErrorMsg.innerHTML = 'Renseigner votre prénom .';
         }
     };
 
@@ -285,7 +287,7 @@ function getForm() {
         if (charRegExp.test(inputLastName.value)) {
             lastNameErrorMsg.innerHTML = '';
         } else {
-            lastNameErrorMsg.innerHTML = 'Veuillez renseigner ce champ.';
+            lastNameErrorMsg.innerHTML = 'Renseigner votre nom.';
         }
     };
 
@@ -296,7 +298,7 @@ function getForm() {
         if (addressRegExp.test(inputAddress.value)) {
             addressErrorMsg.innerHTML = '';
         } else {
-            addressErrorMsg.innerHTML = 'Veuillez renseigner ce champ.';
+            addressErrorMsg.innerHTML = 'Renseigner votre adresse.';
         }
     };
     console.log(validAddress);
@@ -308,7 +310,7 @@ function getForm() {
         if (charRegExp.test(inputCity.value)) {
             cityErrorMsg.innerHTML = '';
         } else {
-            cityErrorMsg.innerHTML = 'Veuillez renseigner ce champ.';
+            cityErrorMsg.innerHTML = 'Renseigner votre ville.';
         }
     };
 
@@ -319,7 +321,7 @@ function getForm() {
         if (emailRegExp.test(inputEmail.value)) {
             emailErrorMsg.innerHTML = '';
         } else {
-            emailErrorMsg.innerHTML = 'Veuillez renseigner votre email.';
+            emailErrorMsg.innerHTML = 'Renseigner un email valide.';
         }
     };
 }
@@ -340,13 +342,15 @@ function postCmd() {
 
 
 
+
+
         //Construction d'un array depuis le local storage qui récupère tout les produits
         let products = [];
         // boucle for pour récuperer les id du local storage 
         for (let i = 0; i < localCart.length; i++) {
             products.push(localCart[i].idProduit);
         }
-        console.log(products.idProduit);
+        console.log(products);
 
 
 
@@ -362,7 +366,7 @@ function postCmd() {
             },
             products: products,
         };
-        console.log(order);
+
 
         // fetch pour la méthode post envoye des infos sur l'api 
         fetch("http://localhost:3000/api/products/order", {
@@ -382,11 +386,11 @@ function postCmd() {
             .then((data) => {
                 console.log(data);
                 console.log('oui')
-                    // renvoi sur la page confirmation 
+                    // renvoi sur la page confirmation  avec l'orderid comme idhtml
                 document.location.href = `confirmation.html?id=${data.orderId}`;
             })
             .catch(((error) => {
-                alert(error.message);
+                console.log(error.message);
             }));
 
     })

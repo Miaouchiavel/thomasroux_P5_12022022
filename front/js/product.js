@@ -118,19 +118,23 @@ function addCartProduct(produitData) {
     if (localCart.length) {
         let modified = false;
         localCart.forEach(element => {
+            // vérification  de la condition couleur et id 
             if (element.idProduit === produitData.idProduit && element.colorChoice === produitData.colorChoice) {
+                // on ajoute la quantité du produit data a l'élément dans le local cart 
 
                 element.quantity += produitData.quantity;
                 modified = true;
             }
         });
+
         if (!modified) {
             localCart.push(produitData);
         }
-
+        // si il est vide on push 
     } else {
         localCart.push(produitData);
 
     }
+    // push dans le local storage 
     localStorage.setItem("cart", JSON.stringify(localCart));
 }
