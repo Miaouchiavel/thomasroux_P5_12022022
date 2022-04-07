@@ -13,8 +13,10 @@ function getProduct() {
         .then(response => response.json())
         // dispatch de la promesse product dans le DOM 
         .then(product => {
-            console.table(product)
-                // Insertion de l'image
+            if (!product) {
+
+            }
+            // Insertion de l'image
             document.querySelector(".item__img").appendChild(productImg);
             productImg.src = product.imageUrl;
             productImg.alt = product.altTxt;
@@ -65,48 +67,17 @@ envoyerPanier.addEventListener("click", (event => {
     // on conditionne l'écoute on ajoute a produit data seulement si les quantité est non nul & la couleur choisite 
     if (produitData.quantity > 0 && produitData.colorChoice) {
         addCartProduct(produitData)
-            // sinon message d'alerte 
+        window.location.href = "cart.html"
+
+        // sinon message d'alerte 
     } else {
         alert("merci de choisir une couleur et une quantité non null  ")
 
     }
 }))
 
-// function addCartProduct(produitData) {
-//     //Initialisation du local storage Json.parse convertie les données en objet JS
-//     let cart = JSON.parse(localStorage.getItem("cart"));
-//     let item = cart.find(item => produitData.idProduct);
-//     let localCart = []
-//         // si le cart (local storage) est  déjà remplis 
-//     if (cart) {
-//         console.log(localCart)
-
-//         cart.forEach(el => {
-//             if (el.idProduit == produitData.idProduit && el.colorChoice == produitData.colorChoice) {
-//                 el.quantity += produitData.quantity
-//                 localCart.push(el)
-//                 console.log("oui")
-//             }
-//             // si il est vide on push 
-//             else {
-//                 localCart.push(produitData);
-//             }
-//         })
-//         console.log(localCart);
-
-//         localCart.push(produitData);
-//         //ajout des items local cart au local 
-//         localStorage.setItem("cart", JSON.stringify(localCart));
 
 
-
-//     } else {
-//         localCart.push(produitData);
-//         localStorage.setItem("cart", JSON.stringify(localCart))
-//         console.log(localCart)
-
-//     }
-// }
 
 function addCartProduct(produitData) {
     //Récupération du panier dans le localStorage

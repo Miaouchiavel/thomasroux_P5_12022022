@@ -239,7 +239,11 @@ let form = document.querySelector(".cart__order__form");
 //Création des expressions régulières avec regexp 
 let emailRegExp = new RegExp('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$');
 let charRegExp = new RegExp("^[a-zA-Z ,.'-]+$");
-let addressRegExp = new RegExp("^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+");
+let addressRegExp = new RegExp("([0-9]*) ?([a-zA-Z,\. ]*)");
+
+
+
+
 
 // Ecoute de la modification du prénom
 form.firstName.addEventListener('change', function() {
@@ -295,6 +299,8 @@ const validLastName = function(inputLastName) {
 const validAddress = function(inputAddress) {
     let addressErrorMsg = inputAddress.nextElementSibling;
 
+
+
     if (addressRegExp.test(inputAddress.value)) {
         addressErrorMsg.innerHTML = '';
         return true;
@@ -302,6 +308,9 @@ const validAddress = function(inputAddress) {
         addressErrorMsg.innerHTML = 'Renseigner votre adresse.';
     }
 };
+
+
+console.log(validAddress);
 
 
 //validation de la ville
