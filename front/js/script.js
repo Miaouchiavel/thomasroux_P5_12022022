@@ -20,6 +20,11 @@ function getArticles() {
             return articles
 
         })
+        .catch((error) => {
+            return console.log("Erreur de la requête API");
+        })
+
+
 
 }
 

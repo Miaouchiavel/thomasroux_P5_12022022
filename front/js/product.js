@@ -39,6 +39,9 @@ function getProduct() {
             }
 
         })
+        .catch((error) => {
+            console.log("Erreur de la requête API");
+        })
 }
 
 // selection du boutton dans le dom 
@@ -65,7 +68,7 @@ envoyerPanier.addEventListener("click", (event => {
     // on conditionne l'écoute on ajoute a produit data seulement si les quantité est non nul & la couleur choisite 
     if (produitData.quantity > 0 && produitData.colorChoice) {
         addCartProduct(produitData)
-        window.location.href = "/cart.html"
+        window.location.href = "cart.html"
 
         // sinon message d'alerte 
     } else {
